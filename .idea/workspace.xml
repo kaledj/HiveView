@@ -34,24 +34,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f074cf6-a988-43f9-922b-3c5f046de8fe" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/HiveView/OnDownloadCompleted.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/deployment.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/layout-land/main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/DownloadVideoTask.class" afterPath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/DownloadVideoTask.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/HelloWorld.class" afterPath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/HelloWorld.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/HiveView.apk" afterPath="$PROJECT_DIR$/out/production/HiveView/HiveView.apk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/HiveView.unaligned.apk" afterPath="$PROJECT_DIR$/out/production/HiveView/HiveView.unaligned.apk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/InitFTPTask.class" afterPath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/InitFTPTask.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/R$raw.class" afterPath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/R$raw.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/R$string.class" afterPath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/R$string.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/R.class" afterPath="$PROJECT_DIR$/out/production/HiveView/com/HiveView/R.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/HiveView/DownloadVideoTask.java" afterPath="$PROJECT_DIR$/src/com/HiveView/DownloadVideoTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/HiveView/HelloWorld.java" afterPath="$PROJECT_DIR$/src/com/HiveView/HelloWorld.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/HiveView/InitFTPTask.java" afterPath="$PROJECT_DIR$/src/com/HiveView/InitFTPTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/HiveView/layout/main.xml" afterPath="$PROJECT_DIR$/out/production/HiveView/layout/main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/main.xml" afterPath="$PROJECT_DIR$/res/layout/main.xml" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\HiveView.apk" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\HiveView.unaligned.apk" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\BuildConfig.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\DownloadVideoTask.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\HelloWorld.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\InitFTPTask.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R$attr.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R$drawable.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R$id.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R$layout.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R$raw.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R$string.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\com\HiveView\R.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\drawable-hdpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\drawable-ldpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\drawable-mdpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\drawable-xhdpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\layout\main.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\raw\ksnn_internet.mp4" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\out\production\HiveView\values\strings.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\res\drawable-hdpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\res\drawable-ldpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\res\drawable-mdpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\res\drawable-xhdpi\ic_launcher.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\res\raw\ksnn_internet.mp4" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\David\Projects\HiveView\res\values\strings.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="HiveView.iws" />
@@ -83,40 +91,14 @@
       <file leaf-file-name="HelloWorld.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/HiveView/HelloWorld.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4466891">
-              <caret line="48" column="44" selection-start-line="48" selection-start-column="44" selection-end-line="48" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.37037036">
+              <caret line="44" column="11" selection-start-line="44" selection-start-column="11" selection-end-line="44" selection-end-column="11" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1138#1350#0" expanded="true" />
                 <element signature="e#1349#1350#0" expanded="true" />
               </folding>
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.6896553">
-              <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout-land/main.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.9310346">
-              <caret line="5" column="42" selection-start-line="5" selection-start-column="42" selection-end-line="5" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="android-designer">
-            <state />
           </provider>
         </entry>
       </file>
@@ -596,12 +578,19 @@
       <workItem from="1436877812533" duration="22375000" />
       <workItem from="1436907624393" duration="37000" />
       <workItem from="1436907712319" duration="5308000" />
-      <workItem from="1436988262190" duration="8381000" />
+      <workItem from="1436988262190" duration="9040000" />
     </task>
+    <task id="LOCAL-00001" summary="Add landscape video player">
+      <created>1436996944912</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1436996944912</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68157000" />
+    <option name="totallyTimeSpent" value="68816000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1082,8 +1071,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/HiveView/HelloWorld.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4466891">
-          <caret line="48" column="44" selection-start-line="48" selection-start-column="44" selection-end-line="48" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.37037036">
+          <caret line="44" column="11" selection-start-line="44" selection-start-column="11" selection-end-line="44" selection-end-column="11" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1138#1350#0" expanded="true" />
