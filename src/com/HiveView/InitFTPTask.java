@@ -14,12 +14,18 @@ import java.io.IOException;
 public class InitFTPTask extends AsyncTask<FTPClient, Void, Boolean> {
 
     private FTPClient ftp;
+    private OnDownloadCompleted onDownloadCompleted;
+
+    public InitFTPTask(OnDownloadCompleted onDownloadCompleted, FTPClient ftp) {
+        this.onDownloadCompleted = onDownloadCompleted;
+        this.ftp = ftp;
+    }
 
     @Override
     protected Boolean doInBackground(FTPClient... clients) {
         try {
-            ftp = clients[0];
             ftp.connect("cs.appstate.edu");
+            ftp.enterLocalPassiveMode();
             int reply = ftp.getReplyCode();
             if(!FTPReply.isPositiveCompletion(reply)) {
                 ftp.disconnect();
@@ -36,7 +42,7 @@ public class InitFTPTask extends AsyncTask<FTPClient, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if(result) {
-            new DownloadVideoTask().execute(ftp);
+            new DownloadVideoTask(onDownloadCompleted).execute(ftp);
         }
     }
 }
