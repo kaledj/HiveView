@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
-        <activity android:name="com.HiveView.HelloWorld"
+        <activity android:name=".MainActivity"
                   android:label="@string/app_name"
                   android:configChanges="orientation">
             <intent-filter>
@@ -15,6 +15,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".TimePickerActivity"/>
     </application>
 
 </manifest>
