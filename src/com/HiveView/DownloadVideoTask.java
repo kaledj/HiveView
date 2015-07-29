@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.content.Context;
 
 /**
@@ -36,26 +39,27 @@ public class DownloadVideoTask extends AsyncTask<FTPClient, Void, File> {
         Log.i(TAG, "Doing DownloadVideoTask in background");
         ftp = clients[0];
         try {
+            // Find the most recent directory
             FTPFile[] dirs = ftp.listDirectories("/usr/local/bee/beemon/pit1");
             int reply = ftp.pwd();
             Log.i(TAG, ftp.getReplyString());
             Log.i(TAG, "" + dirs.length);
             sortFilesByTimestamp(dirs);
-
             String latestDir = "/usr/local/bee/beemon/pit1/" + dirs[0].getName() + "/video";
             Log.i(TAG, latestDir);
+
             FTPFile[] files = ftp.listFiles(latestDir);
             sortFilesByTimestamp(files);
             String latestFile = files[0].getName();
 
-            File temp = File.createTempFile(latestFile, ".h264");
-            temp.deleteOnExit();
-            Log.i(TAG, temp.getAbsolutePath());
+            File downloadedFile = File.createTempFile(latestFile, ".h264");
+//            downloadedFile.deleteOnExit();
+            Log.i(TAG, downloadedFile.getAbsolutePath());
 
-            FileOutputStream fos = new FileOutputStream(temp);
+            FileOutputStream fos = new FileOutputStream(downloadedFile);
             ftp.retrieveFile(latestDir + "/" + latestFile, fos);
             fos.close();
-            return temp;
+            return downloadedFile;
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -78,6 +82,36 @@ public class DownloadVideoTask extends AsyncTask<FTPClient, Void, File> {
             @Override
             public int compare(FTPFile lhs, FTPFile rhs) {
                 return rhs.getTimestamp().compareTo(lhs.getTimestamp());
+            }
+        });
+    }
+
+    public void sortFilesByName(FTPFile[] files) {
+        Arrays.sort(files, new Comparator<FTPFile>() {
+            @Override
+            public int compare(FTPFile lhs, FTPFile rhs) {
+                String lName = lhs.getName();
+                String rName = rhs.getName();
+
+                Pattern p = Pattern.compile("(\\d{2})-(\\d{2})-(\\d{4})_(\\d{2}):(\\d{2}):(\\d{2}).*");
+                Matcher leftMatch = p.matcher();
+                Matcher rightMatch = p.matcher();
+
+            }
+        });
+    }
+
+    public void sortDirsByName(FTPFile[] files) {
+        Arrays.sort(files, new Comparator<FTPFile>() {
+            @Override
+            public int compare(FTPFile lhs, FTPFile rhs) {
+                String lName = lhs.getName();
+                String rName = rhs.getName();
+
+                Pattern p = Pattern.compile("(\\d{2})-(\\d{2})-(\\d{4})");
+                Matcher leftMatch = p.matcher();
+                Matcher rightMatch = p.matcher();
+
             }
         });
     }

@@ -1,6 +1,5 @@
 package com.HiveView;
 
-import android.accounts.NetworkErrorException;
 import android.os.AsyncTask;
 import android.util.Log;
 import org.apache.commons.net.ftp.FTPClient;
@@ -11,17 +10,17 @@ import java.net.PasswordAuthentication;
 
 /**
  * InitFTPTask
- *
  * Asynchronously initializes the FTP connection
  */
 public class InitFTPTask extends AsyncTask<PasswordAuthentication, Void, Boolean> {
+
     private static final String TAG = "InitFTPTask";
     private FTPClient ftp;
-    private OnDownloadCompleted onDownloadCompleted;
+    private OnFTPLogin onFTPLogin;
 
-    public InitFTPTask(OnDownloadCompleted onDownloadCompleted, FTPClient ftp) {
-        this.onDownloadCompleted = onDownloadCompleted;
-        this.ftp = new FTPClient();
+    public InitFTPTask(OnFTPLogin onFTPLogin, FTPClient ftp) {
+        this.onFTPLogin = onFTPLogin;
+        this.ftp = ftp;
     }
 
     @Override
@@ -48,10 +47,6 @@ public class InitFTPTask extends AsyncTask<PasswordAuthentication, Void, Boolean
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if(result) {
-            new DownloadVideoTask(onDownloadCompleted).execute(ftp);
-        } else {
-            System.exit(0);
-        }
+        onFTPLogin.onFTPLogin(result);
     }
 }
