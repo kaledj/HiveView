@@ -1,4 +1,4 @@
-package com.HiveView;
+package com.HiveView.AsyncNetwork;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -37,8 +37,8 @@ public class InitFTPTask extends AsyncTask<PasswordAuthentication, Void, Boolean
                 Log.e(TAG, ftp.getReplyString());
                 System.exit(1);
             }
-            ftp.login(user, new String(password));
-            return true;
+
+            return ftp.login(user, new String(password));
         } catch(IOException e) {
             Log.e(TAG, e.getMessage(), e);
             return false;

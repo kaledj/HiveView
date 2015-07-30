@@ -1,47 +1,72 @@
 package com.HiveView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TimePicker;
-import android.widget.VideoView;
+import com.HiveView.AsyncNetwork.InitFTPTask;
+import com.HiveView.AsyncNetwork.OnFTPLogin;
 import org.apache.commons.net.ftp.FTPClient;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.PasswordAuthentication;
 
 public class LoginActivity extends Activity implements OnFTPLogin {
-
     private static final String TAG = "LoginActivity";
-    private VideoView vidView;
-    private int position;
+
     private FTPClient ftp;
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_splash);
-//        setContentView(R.layout.video_viewer);
-//        vidView = (VideoView) findViewById(R.id.videoView);
-//        new InitFTPTask(this, ).execute(ftp);
-        ftp = new FTPClient();
-        File f = new File("/storage/emulated/0/TestVideo/testout.mkv");
-//        Log.d("", "" + f.exists());
-//        onDownloadCompleted(f);
+        ftp = FTPSession.getInstance();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(ftp.isConnected()) {
+            try {
+                Log.v(TAG, "Resumed " + TAG + ", closing FTP. Log in again.");
+                ftp.disconnect();
+            } catch(IOException e) {
+                Log.e(TAG, "Disconnect failed.", e);
+            }
+        }
+    }
 
+    /**
+     * Called when the FTP connection is established (or fails)
+     * @param status The status of connection
+     */
     public void onFTPLogin(Boolean status) {
-        Intent intent = new Intent(this, TimePickerActivity.class);
-        startActivity(intent);
+        if(status) {
+            Log.d(TAG, ftp.isConnected() + "");
+            Intent intent = new Intent(this, TimePickerActivity.class);
+            startActivity(intent);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("FTP Login failed")
+                   .setTitle("Error")
+                   .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                           dialog.dismiss();
+                       }
+                   });
+            AlertDialog alert =  builder.create();
+            alert.show();
+        }
     }
 
+    /**
+     * Handler for the connect button on the login screen
+     * @param view The button that was clicked
+     */
     public void connectClicked(View view) {
         // Get the username and password from the text fields
         EditText usernameInput = (EditText) findViewById(R.id.usernameInput);
@@ -54,19 +79,5 @@ public class LoginActivity extends Activity implements OnFTPLogin {
         // Create the background login task
         new InitFTPTask(this, ftp).execute(loginInfo);
     }
-
-    public void searchClicked(View view) {
-        DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
-        TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
-        // Grab date info
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth();
-        int year = datePicker.getYear();
-        // Grab time info
-        int hour = timePicker.getCurrentHour();
-        int minute = timePicker.getCurrentMinute();
-    }
-
-
 }
 
