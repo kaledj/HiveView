@@ -1,16 +1,19 @@
 package com.HiveView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import com.HiveView.AsyncNetwork.FindNearestVideoTask;
 import com.HiveView.AsyncNetwork.OnNearestVideoFound;
 import org.apache.commons.net.ftp.FTPClient;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 public class TimePickerActivity extends Activity implements OnNearestVideoFound {
@@ -36,6 +39,7 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
         Log.v(TAG, datePicker.getYear() + " picked");
 
         new FindNearestVideoTask(this).execute(cal);
+        view.setEnabled(false);
     }
 
     /**
@@ -48,6 +52,22 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
     }
 
     public void onNearestVideoFound(String videoPath) {
-
+        if(!videoPath.equals("")) {
+            Log.v(TAG, "Video found at " + videoPath);
+            Intent intent = new Intent(this, VideoViewerActivity.class);
+            intent.putExtra("videoPath", videoPath);
+            startActivity(intent);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Video not found")
+                    .setMessage("No video found for the selected date and time.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert =  builder.create();
+            alert.show();
+        }
     }
 }

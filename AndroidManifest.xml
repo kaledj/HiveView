@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TimePickerActivity"/>
+        <activity android:name=".VideoViewerActivity"/>
     </application>
 
 </manifest>

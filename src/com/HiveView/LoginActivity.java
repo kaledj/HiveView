@@ -73,6 +73,8 @@ public class LoginActivity extends Activity implements OnFTPLogin {
         EditText passwordInput = (EditText) findViewById(R.id.passwordInput);
         String user = usernameInput.getText().toString();
         char[] password = new char[passwordInput.length()];
+        FTPSession.username = user;
+        FTPSession.password = password;
         passwordInput.getText().getChars(0, passwordInput.length(), password, 0);
         PasswordAuthentication loginInfo = new PasswordAuthentication(user, password);
 

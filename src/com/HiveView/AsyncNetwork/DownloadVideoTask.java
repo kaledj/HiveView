@@ -7,6 +7,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,22 +38,24 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
      */
     @Override
     protected File doInBackground(String... filenames) {
-
-//        FileOutputStream fos = new FileOutputStream(downloadedFile);
-//        ftp.retrieveFile(latestDir + "/" + latestFile, fos);
-//        fos.close();
+        String fileName = filenames[0];
+        try {
+            File downloadedFile = File.createTempFile("tempVid", ".mp4");
+//            downloadedFile.deleteOnExit();
+            FileOutputStream fos = new FileOutputStream(downloadedFile);
+            ftp.retrieveFile(fileName, fos);
+            fos.close();
+            return downloadedFile;
+        } catch(IOException e) {
+            Log.e(TAG, "Error.", e);
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(File downloadedFile) {
-        try {
-            Log.d(TAG, "Async task complete.");
-            ftp.disconnect();
-            onDownloadCompleted.onDownloadCompleted(downloadedFile);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        Log.d(TAG, "Download complete.");
+        onDownloadCompleted.onDownloadCompleted(downloadedFile);
     }
 
     public void sortFilesByTimestamp(FTPFile[] files) {

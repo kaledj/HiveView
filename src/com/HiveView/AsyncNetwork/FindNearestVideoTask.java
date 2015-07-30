@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.regex.Pattern;
 
+// TODO: Use a path class instead of manipulating strings- too error prone
 public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
     private static final String TAG = "FindNearestVideoTask";
     private static final String BASE_DIR = "/usr/local/bee/beemon/pit1";
@@ -40,7 +41,9 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
             Log.v(TAG, "Listing " + videoDir);
             FTPFile[] files = ftp.listFiles(videoDir);
             FTPFile match = findMatchingVideo(files, vidNamePrefix);
-            return videoDir + match.getName();
+            if(match != null) {
+                return videoDir + "/" + match.getName();
+            }
         } catch(IOException e) {
             Log.e(TAG, "Failed to list files.", e);
         }

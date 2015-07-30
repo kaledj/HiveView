@@ -8,25 +8,38 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.MediaController;
 import android.widget.VideoView;
+import com.HiveView.AsyncNetwork.ConvertVideoFileTask;
+import com.HiveView.AsyncNetwork.DownloadVideoTask;
 import com.HiveView.AsyncNetwork.OnDownloadCompleted;
+import com.HiveView.AsyncNetwork.OnVideoConverted;
+import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.File;
 
-public class VideoViewerActivity extends Activity implements OnDownloadCompleted {
+public class VideoViewerActivity extends Activity implements OnVideoConverted, OnDownloadCompleted {
     private static final String TAG = "VideoViewerActivity";
 
     private VideoView vidView;
     private int position;
+    private FTPClient ftp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.video_viewer);
+        vidView = (VideoView) findViewById(R.id.videoView);
+
+        ftp = FTPSession.getInstance();
         Intent intent = getIntent();
+        String videoPath = intent.getStringExtra("videoPath");
+        new ConvertVideoFileTask(this).execute(videoPath);
+    }
+
+    public void onVideoConverted(String videoFilename) {
+        new DownloadVideoTask(this).execute(videoFilename);
     }
 
     public void onDownloadCompleted(File downloadedFile) {
-        Log.d(TAG, "Download callback:" + downloadedFile.getName());
-
         vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -35,13 +48,12 @@ public class VideoViewerActivity extends Activity implements OnDownloadCompleted
             }
         });
         Uri vidUri = Uri.parse(downloadedFile.getAbsolutePath());
-        Log.i("", downloadedFile.getAbsolutePath());
+        Log.i(TAG, downloadedFile.getAbsolutePath());
 //        vidView.setVideoURI(vidUri);
-        vidView.setVideoURI(Uri.parse("android.resource://com.HiveView/r/" + R.raw.testmp4));
+        vidView.setVideoURI(Uri.parse("android.resource://com.HiveView/r/" + R.raw.vid_29_07));
         MediaController vidControl = new MediaController(VideoViewerActivity.this);
         vidControl.setAnchorView(vidView);
         vidView.setMediaController(vidControl);
-
         vidView.start();
     }
 
