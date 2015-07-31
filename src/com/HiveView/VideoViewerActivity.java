@@ -1,10 +1,12 @@
 package com.HiveView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -22,6 +24,8 @@ public class VideoViewerActivity extends Activity implements OnVideoConverted, O
     private VideoView vidView;
     private int position;
     private FTPClient ftp;
+    private AlertDialog convertDialog;
+    private AlertDialog downloadDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,13 +37,17 @@ public class VideoViewerActivity extends Activity implements OnVideoConverted, O
         Intent intent = getIntent();
         String videoPath = intent.getStringExtra("videoPath");
         new ConvertVideoFileTask(this).execute(videoPath);
+        buildConvertDialog();
     }
 
     public void onVideoConverted(String videoFilename) {
-        new DownloadVideoTask(this).execute(videoFilename);
+        convertDialog.dismiss();
+        new DownloadVideoTask(this, this).execute(videoFilename);
+        buildDownloadDialog();
     }
 
     public void onDownloadCompleted(File downloadedFile) {
+        downloadDialog.dismiss();
         vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -47,10 +55,13 @@ public class VideoViewerActivity extends Activity implements OnVideoConverted, O
                 vidView.start();
             }
         });
-        Uri vidUri = Uri.parse(downloadedFile.getAbsolutePath());
-        Log.i(TAG, downloadedFile.getAbsolutePath());
-//        vidView.setVideoURI(vidUri);
-        vidView.setVideoURI(Uri.parse("android.resource://com.HiveView/r/" + R.raw.vid_29_07));
+
+        Log.v(TAG, "Path: " + downloadedFile.getPath());
+        Log.i(TAG, "Absolute path: " + downloadedFile.getAbsolutePath());
+
+        // Set the data source
+        vidView.setVideoURI(Uri.parse(downloadedFile.getAbsolutePath()));
+
         MediaController vidControl = new MediaController(VideoViewerActivity.this);
         vidControl.setAnchorView(vidView);
         vidView.setMediaController(vidControl);
@@ -69,5 +80,21 @@ public class VideoViewerActivity extends Activity implements OnVideoConverted, O
         super.onRestoreInstanceState(savedInstanceState);
         position = savedInstanceState.getInt("Position");
         vidView.seekTo(position);
+    }
+
+    private void buildConvertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Status")
+                .setMessage("Converting video on server.");
+        convertDialog =  builder.create();
+        convertDialog.show();
+    }
+
+    private void buildDownloadDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Status")
+                .setMessage("Downloading video from server.");
+        downloadDialog =  builder.create();
+        downloadDialog.show();
     }
 }

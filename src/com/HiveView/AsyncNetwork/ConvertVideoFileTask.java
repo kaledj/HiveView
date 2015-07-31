@@ -38,14 +38,15 @@ public class ConvertVideoFileTask extends AsyncTask<String, Void, String> {
             ChannelExec channelSsh = (ChannelExec) session.openChannel("exec");
             channelSsh.setOutputStream(baos);
             String newVideoFile = filename.replaceFirst(".h264", ".mp4");
-            String command = "/usr/local/bee/bin/ffmpeg -i " + filename + " " + newVideoFile;
+            String command = String.format("/usr/local/bee/bin/ffmpeg -y -i %s -f mp4 -vcodec libx264 -vprofile baseline %s", filename, newVideoFile);
+//            String command = "/usr/local/bee/bin/ffmpeg -y -i " + filename + " " + newVideoFile;
 //            String command = "/usr/local/bee/convert.sh " + filename;
             Log.v(TAG, "Executing: " + command);
             channelSsh.setCommand(command);
             channelSsh.connect();
             channelSsh.disconnect();
-//            session.disconnect();
-            Thread.sleep(5000);
+            Thread.sleep(10000);
+            session.disconnect();
             return newVideoFile;
         } catch(Exception e) {
             Log.e(TAG, "Error when attempting to establish ssh connection.", e);

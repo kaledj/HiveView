@@ -2,6 +2,7 @@ package com.HiveView.AsyncNetwork;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
@@ -37,8 +38,12 @@ public class InitFTPTask extends AsyncTask<PasswordAuthentication, Void, Boolean
                 Log.e(TAG, ftp.getReplyString());
                 System.exit(1);
             }
-
-            return ftp.login(user, new String(password));
+            boolean status = ftp.login(user, new String(password));
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+//            ftp.setFileTransferMode(FTP.BLOCK_TRANSFER_MODE);
+            reply = ftp.getReplyCode();
+            Log.v(TAG, "Reply code: " + reply);
+            return status;
         } catch(IOException e) {
             Log.e(TAG, e.getMessage(), e);
             return false;

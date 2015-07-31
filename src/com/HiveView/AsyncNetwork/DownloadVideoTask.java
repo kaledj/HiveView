@@ -1,15 +1,14 @@
 package com.HiveView.AsyncNetwork;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import com.HiveView.FTPSession;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -25,9 +24,11 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
 
     private OnDownloadCompleted onDownloadCompleted;
     private FTPClient ftp;
+    private Context context;
 
-    public DownloadVideoTask(OnDownloadCompleted onDownloadCompleted) {
+    public DownloadVideoTask(Context context, OnDownloadCompleted onDownloadCompleted) {
         this.onDownloadCompleted = onDownloadCompleted;
+        this.context = context;
         this.ftp = FTPSession.getInstance();
     }
 
@@ -40,11 +41,29 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
     protected File doInBackground(String... filenames) {
         String fileName = filenames[0];
         try {
-            File downloadedFile = File.createTempFile("tempVid", ".mp4");
+//            File cacheDir = context.getExternalCacheDir();
+//            File downloadedFile = new File(cacheDir.getPath(), "tempVid.mp4");
+//            File dir = context.getExternalFilesDir(null);
+//            File downloadedFile = new File(dir.getPath(), "tempVid.mp4");
+
+            Log.v(TAG, "EXT Storage state: " + Environment.getExternalStorageState());
+            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File downloadedFile = new File(dir.getPath(), "tempVid.mp4");
+            if(downloadedFile.exists()) {
+                boolean status = downloadedFile.delete();
+                Log.v(TAG, "File delete: " + status);
+            }
+
 //            downloadedFile.deleteOnExit();
+//            File downloadedFile = File.createTempFile("tempVid", "mp4");
+//            FileOutputStream fos = context.openFileOutput("tempVid.mp4", Context.MODE_WORLD_READABLE);
             FileOutputStream fos = new FileOutputStream(downloadedFile);
-            ftp.retrieveFile(fileName, fos);
-            fos.close();
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            Log.v(TAG, "Downloading: " + fileName);
+            boolean status = ftp.retrieveFile(fileName, bos);
+            Log.v(TAG, "FTP retr status: " + status);
+            bos.close();
+            Log.v(TAG, "Size of file: " + downloadedFile.length() + " bytes.");
             return downloadedFile;
         } catch(IOException e) {
             Log.e(TAG, "Error.", e);

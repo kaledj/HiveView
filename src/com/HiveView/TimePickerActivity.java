@@ -28,6 +28,13 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
         ftp = FTPSession.getInstance();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Button b = (Button) findViewById(R.id.searchButton);
+        b.setEnabled(true);
+    }
+
     public void searchClicked(View view) {
         Log.i(TAG, "Search button clicked");
         // Get the date and time
@@ -68,6 +75,7 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
                     });
             AlertDialog alert =  builder.create();
             alert.show();
+            findViewById(R.id.searchButton).setEnabled(true);
         }
     }
 }
