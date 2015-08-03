@@ -40,18 +40,21 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
     @Override
     protected File doInBackground(String... filenames) {
         String fileName = filenames[0];
+        String[] split = fileName.split("/");
+        String localFilename = split[split.length-1];
+        Log.v(TAG, "Filename: " + localFilename);
         try {
-//            File cacheDir = context.getExternalCacheDir();
-//            File downloadedFile = new File(cacheDir.getPath(), "tempVid.mp4");
+            File cacheDir = context.getCacheDir();
+            File downloadedFile = new File(cacheDir.getPath(), localFilename);
 //            File dir = context.getExternalFilesDir(null);
 //            File downloadedFile = new File(dir.getPath(), "tempVid.mp4");
 
-            Log.v(TAG, "EXT Storage state: " + Environment.getExternalStorageState());
-            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File downloadedFile = new File(dir.getPath(), "tempVid.mp4");
+//            Log.v(TAG, "EXT Storage state: " + Environment.getExternalStorageState());
+//            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+//            File downloadedFile = new File(dir.getPath(), fileName);
             if(downloadedFile.exists()) {
                 boolean status = downloadedFile.delete();
-                Log.v(TAG, "File delete: " + status);
+                Log.v(TAG, "File deleted: " + status);
             }
 
 //            downloadedFile.deleteOnExit();

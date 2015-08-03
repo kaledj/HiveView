@@ -81,5 +81,10 @@ public class LoginActivity extends Activity implements OnFTPLogin {
         // Create the background login task
         new InitFTPTask(this, ftp).execute(loginInfo);
     }
+
+    public void viewSavedVideosClicked(View view) {
+        Intent intent = new Intent(this, ViewSavedVideosActivity.class);
+        startActivity(intent);
+    }
 }
 

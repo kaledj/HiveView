@@ -43,6 +43,8 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
             FTPFile match = findMatchingVideo(files, vidNamePrefix);
             if(match != null) {
                 return videoDir + "/" + match.getName();
+            } else {
+                return findNearestVideo(vidNamePrefix);
             }
         } catch(IOException e) {
             Log.e(TAG, "Failed to list files.", e);
@@ -62,6 +64,10 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
 
     private String findNearestMinute(FTPFile[] files, Calendar cal) {
         // TODO: Return closest hour/minute (HH:MM) if there is no exact match
+        return "";
+    }
+
+    private String findNearestVideo(String vidNamePrefix) {
         return "";
     }
 

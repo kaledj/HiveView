@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".TimePickerActivity"/>
         <activity android:name=".VideoViewerActivity"/>
+        <activity android:name=".ViewSavedVideosActivity"/>
     </application>
 
 </manifest>

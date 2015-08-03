@@ -20,6 +20,8 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
     private static final String TAG = "TimePickerActivity";
 
     private FTPClient ftp;
+    private int hour;
+    private int minute;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
         DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
         Calendar cal = Calendar.getInstance();
+        hour = timePicker.getCurrentHour();
+        minute = timePicker.getCurrentMinute();
         cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
                 timePicker.getCurrentHour(), timePicker.getCurrentMinute());
         Log.v(TAG, datePicker.getYear() + " picked");
@@ -63,6 +67,8 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
             Log.v(TAG, "Video found at " + videoPath);
             Intent intent = new Intent(this, VideoViewerActivity.class);
             intent.putExtra("videoPath", videoPath);
+            intent.putExtra("hour", hour);
+            intent.putExtra("minute", minute);
             startActivity(intent);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
