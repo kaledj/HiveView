@@ -44,32 +44,26 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
         String localFilename = split[split.length-1];
         Log.v(TAG, "Filename: " + localFilename);
         try {
-            File cacheDir = context.getCacheDir();
+            // Create a new file in the app private cache
+            File cacheDir = context.getFilesDir();
             File downloadedFile = new File(cacheDir.getPath(), localFilename);
-//            File dir = context.getExternalFilesDir(null);
-//            File downloadedFile = new File(dir.getPath(), "tempVid.mp4");
-
-//            Log.v(TAG, "EXT Storage state: " + Environment.getExternalStorageState());
-//            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-//            File downloadedFile = new File(dir.getPath(), fileName);
+            Log.v(TAG, "Saving file to: " + downloadedFile.getPath());
             if(downloadedFile.exists()) {
                 boolean status = downloadedFile.delete();
                 Log.v(TAG, "File deleted: " + status);
             }
-
-//            downloadedFile.deleteOnExit();
-//            File downloadedFile = File.createTempFile("tempVid", "mp4");
-//            FileOutputStream fos = context.openFileOutput("tempVid.mp4", Context.MODE_WORLD_READABLE);
-            FileOutputStream fos = new FileOutputStream(downloadedFile);
+            FileOutputStream fos = context.openFileOutput(localFilename, Context.MODE_WORLD_READABLE);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             Log.v(TAG, "Downloading: " + fileName);
             boolean status = ftp.retrieveFile(fileName, bos);
             Log.v(TAG, "FTP retr status: " + status);
             bos.close();
             Log.v(TAG, "Size of file: " + downloadedFile.length() + " bytes.");
-            return downloadedFile;
+            return context.getFileStreamPath(localFilename);
         } catch(IOException e) {
             Log.e(TAG, "Error.", e);
+        } finally {
+            new DeleteRemoteFilesTask().execute(fileName);
         }
         return null;
     }

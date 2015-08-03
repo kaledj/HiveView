@@ -2,31 +2,35 @@ package com.HiveView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
-import com.HiveView.AsyncNetwork.FindNearestVideoTask;
-import com.HiveView.AsyncNetwork.OnNearestVideoFound;
+import com.HiveView.AsyncNetwork.*;
 import org.apache.commons.net.ftp.FTPClient;
 
+import java.io.File;
 import java.util.Calendar;
 
-public class TimePickerActivity extends Activity implements OnNearestVideoFound {
+public class TimePickerActivity extends Activity implements OnNearestVideoFound, OnVideoConverted, OnDownloadCompleted {
     private static final String TAG = "TimePickerActivity";
 
     private FTPClient ftp;
-    private int hour;
-    private int minute;
+    private AlertDialog convertDialog;
+    private AlertDialog downloadDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.datetime_picker);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         ftp = FTPSession.getInstance();
     }
 
@@ -43,33 +47,19 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
         DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
         TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
         Calendar cal = Calendar.getInstance();
-        hour = timePicker.getCurrentHour();
-        minute = timePicker.getCurrentMinute();
         cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
                 timePicker.getCurrentHour(), timePicker.getCurrentMinute());
         Log.v(TAG, datePicker.getYear() + " picked");
 
-        new FindNearestVideoTask(this).execute(cal);
+        new FindNearestVideoTask(this, this).execute(cal);
         view.setEnabled(false);
-    }
-
-    /**
-     * Checks if the requested video exists on the server
-     * @param cal The timestamp of the requested video
-     */
-    public boolean isVideoAvailable(Calendar cal) {
-        // TODO: Return the value
-        return false;
     }
 
     public void onNearestVideoFound(String videoPath) {
         if(!videoPath.equals("")) {
+            new ConvertVideoFileTask(this).execute(videoPath);
+            buildConvertDialog();
             Log.v(TAG, "Video found at " + videoPath);
-            Intent intent = new Intent(this, VideoViewerActivity.class);
-            intent.putExtra("videoPath", videoPath);
-            intent.putExtra("hour", hour);
-            intent.putExtra("minute", minute);
-            startActivity(intent);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Video not found")
@@ -84,4 +74,39 @@ public class TimePickerActivity extends Activity implements OnNearestVideoFound 
             findViewById(R.id.searchButton).setEnabled(true);
         }
     }
+
+    public void onVideoConverted(String videoFilename) {
+        convertDialog.dismiss();
+        new DownloadVideoTask(this, this).execute(videoFilename);
+        buildDownloadDialog();
+    }
+
+    public void onDownloadCompleted(File downloadedFile) {
+        downloadDialog.dismiss();
+        Intent intent = new Intent(this, VideoViewerActivity.class);
+        intent.putExtra("videoPath", downloadedFile.getAbsolutePath());
+        startActivity(intent);
+    }
+
+    private void buildConvertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Status")
+                .setMessage("Converting video on server.");
+        convertDialog =  builder.create();
+        convertDialog.show();
+    }
+
+    private void buildDownloadDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Status")
+                .setMessage("Downloading video from server.");
+        downloadDialog =  builder.create();
+        downloadDialog.show();
+    }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//    }
 }

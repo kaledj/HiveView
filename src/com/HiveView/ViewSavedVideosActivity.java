@@ -23,10 +23,10 @@ public class ViewSavedVideosActivity extends Activity {
         setContentView(R.layout.saved_files_viewer);
         listView = (ListView) findViewById(R.id.videoListView);
 
-        File[] files = getFilesDir().listFiles();
+        final File[] files = getFilesDir().listFiles();
         final String[] filenames = new String[files.length];
         for(int i = 0; i < files.length; i++) {
-            filenames[i] = files[i].getName();
+            filenames[i] = files[i].getName().split("\\.")[0];
         }
         Log.v(TAG, "Listing " + files.length + " saved files.");
 
@@ -36,8 +36,7 @@ public class ViewSavedVideosActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(ViewSavedVideosActivity.this, VideoViewerActivity.class);
-                intent.putExtra("videoPath", filenames[i]);
-                intent.putExtra("isLocal", true);
+                intent.putExtra("videoPath", files[i].getAbsolutePath());
                 startActivity(intent);
             }
         });

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,44 +20,23 @@ import com.HiveView.AsyncNetwork.OnVideoConverted;
 import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.*;
-import java.nio.Buffer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class VideoViewerActivity extends Activity implements OnVideoConverted, OnDownloadCompleted {
+public class VideoViewerActivity extends Activity  {
     private static final String TAG = "VideoViewerActivity";
 
     private VideoView vidView;
-    private int position;
-    private FTPClient ftp;
-    private AlertDialog convertDialog;
-    private AlertDialog downloadDialog;
-    private File currentvideo;
-    private File nextVideo;
     private String currentVideoPath;
-    private int hour;
-    private int minute;
-    private boolean isLocal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate");
         setContentView(R.layout.video_viewer);
         vidView = (VideoView) findViewById(R.id.videoView);
-
-        ftp = FTPSession.getInstance();
         Intent intent = getIntent();
         String videoPath = intent.getStringExtra("videoPath");
         Log.v(TAG, "Video path: " + videoPath);
-        if(intent.hasExtra("isLocal")) {
-            isLocal = intent.getBooleanExtra("isLocal", false);
-        }
-        if(isLocal) {
-            playVideo(new File(getFilesDir().getPath(), videoPath));
-        } else {
-            new ConvertVideoFileTask(this).execute(videoPath);
-            buildConvertDialog();
-        }
+        playVideo(videoPath);
     }
 
     @Override
@@ -78,54 +56,20 @@ public class VideoViewerActivity extends Activity implements OnVideoConverted, O
         }
     }
 
-    public void onVideoConverted(String videoFilename) {
-        currentVideoPath = videoFilename;
-        convertDialog.dismiss();
-        new DownloadVideoTask(this, this).execute(videoFilename);
-        buildDownloadDialog();
-    }
-
-    public void onDownloadCompleted(File downloadedFile) {
-        downloadDialog.dismiss();
-        vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                vidView.seekTo(position);
-                vidView.start();
-            }
-        });
-        currentvideo = downloadedFile;
-        playVideo(downloadedFile);
-    }
-
-    public void playVideo(final File videoFile) {
-        Log.v(TAG, "Playing video: " + videoFile.getPath());
-
+    public void playVideo(String videoFilePath) {
+        currentVideoPath = videoFilePath;
+        Log.v(TAG, "Playing video: " + videoFilePath);
         // Set the data source
-        vidView.setVideoURI(Uri.parse(videoFile.getAbsolutePath()));
-
+        vidView.setVideoPath(videoFilePath);
         // Play the video
         MediaController vidControl = new MediaController(VideoViewerActivity.this);
         vidControl.setAnchorView(vidView);
         vidView.setMediaController(vidControl);
-        vidView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (videoFile.exists() && !isLocal) {
-                    videoFile.delete();
-                }
-            }
-        });
         vidView.start();
     }
 
     public void downloadNext() {
         // TODO: Somewhere else, create a sorted list of files on the server and just get the next
-        minute += 1;
-        if(minute > 59) {
-            minute = 0;
-            hour += 1;
-        }
     }
 
     @Override
@@ -138,49 +82,31 @@ public class VideoViewerActivity extends Activity implements OnVideoConverted, O
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        position = savedInstanceState.getInt("Position");
-        vidView.seekTo(position);
-    }
-
-    private void buildConvertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Status")
-                .setMessage("Converting video on server.");
-        convertDialog =  builder.create();
-        convertDialog.show();
-    }
-
-    private void buildDownloadDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Status")
-                .setMessage("Downloading video from server.");
-        downloadDialog =  builder.create();
-        downloadDialog.show();
+        vidView.seekTo(savedInstanceState.getInt("Position"));
     }
 
     private boolean saveCurrentVideo() {
-        if(isLocal || currentvideo == null) {
-            return false;
-        } else if(currentvideo.exists()) {
-            try {
-                BufferedOutputStream bos = new BufferedOutputStream(
-                        openFileOutput(currentvideo.getName(), Context.MODE_PRIVATE));
-                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(currentvideo));
-                byte[] buffer = new byte[1024];
-                int dataRead = bis.read(buffer);
-                while (dataRead != -1) {
-                    bos.write(buffer);
-                    dataRead = bis.read(buffer);
-                }
-                bos.close();
-                bis.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Error saving file.", e);
-                return false;
-            } finally {
-                currentvideo.delete();
+        String[] split = currentVideoPath.split("/");
+        String currentVideoBasename = split[split.length - 1];
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(
+                    openFileOutput("cached_" + currentVideoBasename, Context.MODE_WORLD_READABLE));
+            BufferedInputStream bis = new BufferedInputStream(
+                    openFileInput(currentVideoBasename));
+            byte[] buffer = new byte[1024];
+            int dataRead = bis.read(buffer);
+            while (dataRead != -1) {
+                bos.write(buffer);
+                dataRead = bis.read(buffer);
             }
+            bos.close();
+            bis.close();
+            return true;
+        } catch (IOException e) {
+            Log.e(TAG, "Error saving file.", e);
+            return false;
+        } finally {
+            new File(currentVideoPath).delete();
         }
-        return true;
     }
 }

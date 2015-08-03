@@ -1,13 +1,16 @@
 package com.HiveView.AsyncNetwork;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.HiveView.FTPSession;
+import com.HiveView.R;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // TODO: Use a path class instead of manipulating strings- too error prone
@@ -17,10 +20,12 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
 
     private FTPClient ftp;
     private OnNearestVideoFound callback;
+    private Context context;
 
-    public FindNearestVideoTask(OnNearestVideoFound callback) {
+    public FindNearestVideoTask(Context context, OnNearestVideoFound callback) {
         ftp = FTPSession.getInstance();
         this.callback = callback;
+        this.context = context;
     }
 
     @Override
@@ -43,8 +48,6 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
             FTPFile match = findMatchingVideo(files, vidNamePrefix);
             if(match != null) {
                 return videoDir + "/" + match.getName();
-            } else {
-                return findNearestVideo(vidNamePrefix);
             }
         } catch(IOException e) {
             Log.e(TAG, "Failed to list files.", e);
@@ -67,8 +70,30 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
         return "";
     }
 
-    private String findNearestVideo(String vidNamePrefix) {
-        return "";
+    private FTPFile findNearestVideo(FTPFile[] files, String videoNamePrefix) {
+        // TODO: Get the regex to work
+        Log.v(TAG, "Finding nearest video to: " + videoNamePrefix.trim());
+//        Pattern p = Pattern.compile(context.getString(R.string.video_basename_prefix_pattern));
+        // Extract time from filename
+//        Matcher m = p.matcher(videoNamePrefix);
+        String hour = videoNamePrefix.substring(11, 13);
+        String min = videoNamePrefix.substring(14, 16);
+        Log.v(TAG, "Substrings: " + hour + " " + min);
+        int minutesFrom0 = (Integer.parseInt(hour) * 60) + (Integer.parseInt(min));
+
+        int minDistance = Integer.MAX_VALUE;
+        FTPFile nearest = null;
+        for(FTPFile file : files) {
+            hour = file.getName().substring(11, 13);
+            min = file.getName().substring(14, 16);
+            int fileMinutesFrom0 = (Integer.parseInt(hour) * 60) + (Integer.parseInt(min));
+            int distance = Math.abs(fileMinutesFrom0 - minutesFrom0);
+            if (distance < minDistance) {
+                nearest = file;
+                minDistance = distance;
+            }
+        }
+        return nearest;
     }
 
     /**
@@ -84,6 +109,7 @@ public class FindNearestVideoTask extends AsyncTask<Calendar, Void, String> {
                 match = file;
             }
         }
-        return match;
+        // If theres a match, return it, otherwise return the nearest video
+        return match == null ? findNearestVideo(files, videoNamePrefix) : match;
     }
 }

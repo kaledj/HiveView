@@ -9,13 +9,15 @@
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity android:name=".LoginActivity"
                   android:label="@string/app_name"
+                  android:screenOrientation="portrait"
                   android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".TimePickerActivity"/>
+        <activity android:name=".TimePickerActivity"
+                  android:configChanges="orientation"/>
         <activity android:name=".VideoViewerActivity"/>
         <activity android:name=".ViewSavedVideosActivity"/>
     </application>
