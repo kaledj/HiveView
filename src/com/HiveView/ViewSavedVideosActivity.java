@@ -1,16 +1,14 @@
 package com.HiveView;
 
 import android.app.Activity;
-import android.app.LauncherActivity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ViewSavedVideosActivity extends Activity {
     private static final String TAG = "ViewSavedVideosActivity";
@@ -23,7 +21,8 @@ public class ViewSavedVideosActivity extends Activity {
         setContentView(R.layout.saved_files_viewer);
         listView = (ListView) findViewById(R.id.videoListView);
 
-        final File[] files = getFilesDir().listFiles();
+        File[] oldFiles = getFilesDir().listFiles();
+        final File[] files = pruneOldFiles(oldFiles);
         final String[] filenames = new String[files.length];
         for(int i = 0; i < files.length; i++) {
             filenames[i] = files[i].getName().split("\\.")[0];
@@ -40,5 +39,17 @@ public class ViewSavedVideosActivity extends Activity {
                 startActivity(intent);
             }
         });
+    }
+
+    protected File[] pruneOldFiles(File[] oldFiles) {
+        ArrayList<File> newFiles = new ArrayList<File>(oldFiles.length);
+        for(File oldFile : oldFiles) {
+            if(!oldFile.getName().matches("cached_.*")) {
+                oldFile.delete();
+            } else {
+                newFiles.add(oldFile);
+            }
+        }
+        return newFiles.toArray(new File[newFiles.size()]);
     }
 }

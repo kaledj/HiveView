@@ -1,11 +1,8 @@
 package com.HiveView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,13 +10,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.MediaController;
 import android.widget.VideoView;
-import com.HiveView.AsyncNetwork.ConvertVideoFileTask;
-import com.HiveView.AsyncNetwork.DownloadVideoTask;
-import com.HiveView.AsyncNetwork.OnDownloadCompleted;
-import com.HiveView.AsyncNetwork.OnVideoConverted;
-import org.apache.commons.net.ftp.FTPClient;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 public class VideoViewerActivity extends Activity  {
     private static final String TAG = "VideoViewerActivity";
@@ -68,6 +63,28 @@ public class VideoViewerActivity extends Activity  {
         vidView.start();
     }
 
+    public void checkFileStillExists() {
+        if(!new File(currentVideoPath).exists()) {
+            String[] split = currentVideoPath.split("/");
+            String basename = split[split.length -1];
+            String cachedFilePath = currentVideoPath.replaceFirst(basename, "cached_" + basename);
+            if(!new File(cachedFilePath).exists()) {
+                Log.d(TAG, "No cached file found for: " + cachedFilePath);
+            } else {
+                currentVideoPath = cachedFilePath;
+            }
+        }
+        vidView.setVideoPath(currentVideoPath);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume");
+        checkFileStillExists();
+        vidView.start();
+    }
+
     public void downloadNext() {
         // TODO: Somewhere else, create a sorted list of files on the server and just get the next
     }
@@ -75,6 +92,7 @@ public class VideoViewerActivity extends Activity  {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        Log.v(TAG, "onSaveInstanceState");
         savedInstanceState.putInt("Position", vidView.getCurrentPosition());
         vidView.pause();
     }
@@ -82,6 +100,7 @@ public class VideoViewerActivity extends Activity  {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Log.v(TAG, "onRestoreInstanceState");
         vidView.seekTo(savedInstanceState.getInt("Position"));
     }
 

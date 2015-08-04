@@ -44,7 +44,7 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
         String localFilename = split[split.length-1];
         Log.v(TAG, "Filename: " + localFilename);
         try {
-            // Create a new file in the app private cache
+            // Create a new file in the app private directory
             File cacheDir = context.getFilesDir();
             File downloadedFile = new File(cacheDir.getPath(), localFilename);
             Log.v(TAG, "Saving file to: " + downloadedFile.getPath());
